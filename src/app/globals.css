@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+@layer base {
+  body {
+    @apply bg-white text-gray-800 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-kimi-500 hover:bg-kimi-600 text-white font-medium
+           px-5 py-2.5 rounded-lg transition-colors duration-150;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-700 border border-gray-200
+           px-5 py-2.5 rounded-lg transition-colors duration-150;
+  }
+
+  .btn-accent {
+    @apply bg-ruri-500 hover:bg-ruri-600 text-white font-medium
+           px-5 py-2.5 rounded-lg transition-colors duration-150;
+  }
+
+  .card {
+    @apply bg-white border border-gray-100 rounded-xl p-6 shadow-sm
+           hover:shadow-md transition-shadow duration-200;
+  }
+
+  .tag {
+    @apply inline-block bg-kimi-50 text-kimi-700 text-xs font-medium
+           px-2.5 py-1 rounded-full;
+  }
+
+  .tag-success {
+    @apply inline-block bg-emerald-50 text-emerald-700 text-xs font-medium
+           px-2.5 py-1 rounded-full;
+  }
+
+  .tag-fail {
+    @apply inline-block bg-red-50 text-red-700 text-xs font-medium
+           px-2.5 py-1 rounded-full;
+  }
+
+  .state-badge {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded;
+  }
+
+  .input-field {
+    @apply w-full border border-gray-200 rounded-lg px-4 py-2.5
+           focus:outline-none focus:ring-2 focus:ring-kimi-300 focus:border-kimi-400
+           placeholder-gray-400 transition-all duration-150;
+  }
+
+  .textarea-field {
+    @apply w-full border border-gray-200 rounded-lg px-4 py-3
+           focus:outline-none focus:ring-2 focus:ring-kimi-300 focus:border-kimi-400
+           placeholder-gray-400 transition-all duration-150 resize-none;
+  }
+}
+
+/* 振り返りカードのスタイル */
+.reflection-card {
+  @apply bg-ruri-50 border border-ruri-100 rounded-xl p-6;
+}
+
+.reflection-card h3 {
+  @apply text-ruri-700 font-bold text-sm mb-2;
+}
+
+.reflection-card p {
+  @apply text-gray-700 text-sm leading-relaxed;
+}
+
+/* スクロールバー */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-300;
+}
