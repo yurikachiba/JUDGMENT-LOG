@@ -352,9 +352,20 @@ export default function LandingPage() {
             <Logo size={22} />
             <span className="text-xs font-medium text-gray-400">判断ログ</span>
           </div>
-          <p className="text-xs text-gray-300">
-            答えを出すのではなく、問いを返す。
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/terms"
+              className="text-xs text-gray-300 hover:text-gray-500 transition-colors"
+            >
+              利用規約
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-xs text-gray-300 hover:text-gray-500 transition-colors"
+            >
+              プライバシーポリシー
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
