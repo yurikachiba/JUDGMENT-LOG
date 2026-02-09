@@ -27,12 +27,18 @@ export function ReflectionView({ reflection }: Props) {
   const saveAnswer = async () => {
     setSaving(true);
     try {
-      await fetch(`/api/reflections/${reflection.id}`, {
+      const res = await fetch(`/api/reflections/${reflection.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answer }),
       });
-      setEditing(false);
+      if (res.ok) {
+        setEditing(false);
+      } else {
+        console.error("回答の保存に失敗しました:", res.status);
+      }
+    } catch (error) {
+      console.error("回答の保存中にエラーが発生しました:", error);
     } finally {
       setSaving(false);
     }

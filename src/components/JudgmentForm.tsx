@@ -39,7 +39,12 @@ export function JudgmentForm({ onCreated }: Props) {
 
       if (res.ok) {
         onCreated();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        console.error("判断の記録に失敗しました:", data.error || res.status);
       }
+    } catch (error) {
+      console.error("判断の記録中にエラーが発生しました:", error);
     } finally {
       setSubmitting(false);
     }
