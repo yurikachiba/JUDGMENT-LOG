@@ -4,6 +4,21 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "判断ログ",
   description: "自分を更新するための判断記録システム",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "判断ログ",
+    description: "自分を更新するための判断記録システム",
+    images: ["/ogp.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "判断ログ",
+    description: "自分を更新するための判断記録システム",
+    images: ["/ogp.png"],
+  },
 };
 
 export default function RootLayout({
