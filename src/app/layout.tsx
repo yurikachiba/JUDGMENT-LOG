@@ -1,7 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { UserMenu } from "@/components/UserMenu";
+
+export const viewport: Viewport = {
+  themeColor: "#E8A317",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: "判断ログ",
@@ -17,9 +25,17 @@ export const metadata: Metadata = {
     apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
   },
   manifest: "/site.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "判断ログ",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   other: {
     "msapplication-TileColor": "#E8A317",
-    "theme-color": "#E8A317",
+    "mobile-web-app-capable": "yes",
   },
   openGraph: {
     title: "判断ログ",
