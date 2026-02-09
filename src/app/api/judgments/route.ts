@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { Prisma } from "@prisma/client";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // GET /api/judgments - 判断一覧
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(req.url);
     const tag = searchParams.get("tag");
     const search = searchParams.get("search");
 
-    let where = {};
+    let where: Prisma.JudgmentWhereInput = { userId: session.user.id };
     if (tag) {
-      where = { tags: { contains: tag } };
+      where = { ...where, tags: { contains: tag } };
     }
     if (search) {
       where = {
@@ -41,6 +49,11 @@ export async function GET(req: NextRequest) {
 // POST /api/judgments - 新規判断を記録
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
     const body = await req.json();
 
     const { content, energy, time, mind, premise, alternatives, tags } = body;
@@ -61,6 +74,7 @@ export async function POST(req: NextRequest) {
         premise,
         alternatives: alternatives || "",
         tags: tags || "",
+        userId: session.user.id,
       },
     });
 
