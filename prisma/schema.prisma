@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -13,7 +13,7 @@ model Judgment {
   energy       String   // high / mid / low（体力）
   time         String   // plenty / normal / tight（時間）
   mind         String   // clear / normal / cloudy（心）
-  premise      String   // その時の前提（1〜2行）
+  premise      String   @db.Text // その時の前提（1〜2行）
   alternatives String   @default("") // 見送った選択肢
   tags         String   @default("") // カンマ区切りタグ
   createdAt    DateTime @default(now())
@@ -26,7 +26,7 @@ model Reflection {
   id         String   @id @default(cuid())
   judgmentId String
   judgment   Judgment  @relation(fields: [judgmentId], references: [id], onDelete: Cascade)
-  response   String   // AIからの問い返し全文
-  answer     String   @default("") // ユーザーの回答（任意）
+  response   String   @db.Text // AIからの問い返し全文
+  answer     String   @default("") @db.Text // ユーザーの回答（任意）
   createdAt  DateTime @default(now())
 }
