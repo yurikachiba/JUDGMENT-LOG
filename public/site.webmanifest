@@ -12,10 +12,19 @@
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "theme_color": "#E8A317",
   "background_color": "#FAFAF8",
   "display": "standalone",
-  "start_url": "/"
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "ja"
 }

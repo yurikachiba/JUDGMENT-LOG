@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { findSimilarJudgments } from "@/lib/similarity";
 import { generateReflection } from "@/lib/ai";
@@ -9,11 +11,16 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
     const judgment = await prisma.judgment.findUnique({
       where: { id: params.id },
     });
 
-    if (!judgment) {
+    if (!judgment || judgment.userId !== session.user.id) {
       return NextResponse.json(
         { error: "判断が見つかりません" },
         { status: 404 }
