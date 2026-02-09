@@ -16,9 +16,10 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * /login, /lp, /api/auth 以外の全ルートを保護
-     * 静的ファイル (_next, favicon 等) は除外
+     * /dashboard と /api（/api/auth を除く）を保護
+     * /, /login, /api/auth, 静的ファイル (_next, favicon 等) は公開
      */
-    "/((?!login|lp|api/auth|_next/static|_next/image|favicon|apple-touch-icon|site\\.webmanifest|ogp).*)",
+    "/dashboard/:path*",
+    "/api/((?!auth).*)",
   ],
 };

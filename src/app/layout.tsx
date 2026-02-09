@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
-import { UserMenu } from "@/components/UserMenu";
 
 export const viewport: Viewport = {
   themeColor: "#E8A317",
@@ -12,8 +11,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "判断ログ",
-  description: "自分を更新するための判断記録システム",
+  title: "判断ログ - 自分を更新するための判断記録システム",
+  description:
+    "成功でも失敗でもない。判断を記録し、AIが過去の自分を呼び出し、未来の自分に問いを返す。答えを出すのではなく、判断を疑える自分でい続けるために。",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "48x48" },
@@ -38,14 +38,16 @@ export const metadata: Metadata = {
     "mobile-web-app-capable": "yes",
   },
   openGraph: {
-    title: "判断ログ",
-    description: "自分を更新するための判断記録システム",
+    title: "判断ログ - 自分を更新するための判断記録システム",
+    description:
+      "成功でも失敗でもない。判断を記録し、AIが過去の自分を呼び出し、未来の自分に問いを返す。",
     images: ["/ogp.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "判断ログ",
-    description: "自分を更新するための判断記録システム",
+    title: "判断ログ - 自分を更新するための判断記録システム",
+    description:
+      "成功でも失敗でもない。判断を記録し、AIが過去の自分を呼び出し、未来の自分に問いを返す。",
     images: ["/ogp.png"],
   },
 };
@@ -58,32 +60,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="min-h-screen bg-[#FAFAF8]">
-        <Providers>
-          <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100">
-            <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-              <a href="/" className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-kimi-500 flex items-center justify-center">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                  </svg>
-                </div>
-                <span className="font-bold text-gray-800 text-lg">判断ログ</span>
-              </a>
-              <UserMenu />
-            </div>
-          </header>
-          <main className="max-w-3xl mx-auto px-4 py-8">{children}</main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
