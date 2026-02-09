@@ -4,6 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "判断ログ",
   description: "自分を更新するための判断記録システム",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "判断ログ",
     description: "自分を更新するための判断記録システム",
