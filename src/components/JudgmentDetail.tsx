@@ -63,7 +63,11 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
       if (res.ok) {
         const reflection = await res.json();
         setReflections([reflection, ...reflections]);
+      } else {
+        console.error("振り返りの生成に失敗しました:", res.status);
       }
+    } catch (error) {
+      console.error("振り返りの生成中にエラーが発生しました:", error);
     } finally {
       setReflecting(false);
     }
@@ -71,11 +75,15 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
 
   const handleTagsUpdate = async (newTags: string) => {
     setTags(newTags);
-    await fetch(`/api/judgments/${judgment.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tags: newTags }),
-    });
+    try {
+      await fetch(`/api/judgments/${judgment.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tags: newTags }),
+      });
+    } catch (error) {
+      console.error("タグの更新中にエラーが発生しました:", error);
+    }
   };
 
   return (

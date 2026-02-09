@@ -32,12 +32,23 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const fetchJudgments = useCallback(async () => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set("search", searchQuery);
-    const res = await fetch(`/api/judgments?${params}`);
-    const data = await res.json();
-    setJudgments(data);
-    setLoading(false);
+    try {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set("search", searchQuery);
+      const res = await fetch(`/api/judgments?${params}`);
+      if (!res.ok) {
+        console.error("判断一覧の取得に失敗しました:", res.status);
+        setJudgments([]);
+        return;
+      }
+      const data = await res.json();
+      setJudgments(data);
+    } catch (error) {
+      console.error("判断一覧の取得中にエラーが発生しました:", error);
+      setJudgments([]);
+    } finally {
+      setLoading(false);
+    }
   }, [searchQuery]);
 
   useEffect(() => {
