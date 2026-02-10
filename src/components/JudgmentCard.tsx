@@ -7,6 +7,7 @@ interface Judgment {
   time: string;
   mind: string;
   premise: string;
+  personaTag: string;
   tags: string;
   createdAt: string;
   reflections: Array<{ id: string }>;
@@ -55,6 +56,11 @@ export function JudgmentCard({ judgment, onClick }: Props) {
           <p className="text-sm text-gray-500 mt-1 line-clamp-1">
             {judgment.premise}
           </p>
+          {judgment.personaTag && (
+            <p className="text-xs text-kimi-500 mt-1 italic">
+              — {judgment.personaTag}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           {/* 状態インジケーター */}

@@ -19,6 +19,7 @@ interface Judgment {
   mind: string;
   premise: string;
   alternatives: string;
+  personaTag: string;
   tags: string;
   createdAt: string;
   reflections: Reflection[];
@@ -149,6 +150,16 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
               見送った選択肢
             </h3>
             <p className="text-gray-800">{judgment.alternatives}</p>
+          </div>
+        )}
+
+        {/* 人格タグ */}
+        {judgment.personaTag && (
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-gray-500 mb-1">
+              この判断をした自分
+            </h3>
+            <p className="text-gray-800 italic">— {judgment.personaTag}</p>
           </div>
         )}
 

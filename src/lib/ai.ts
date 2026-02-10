@@ -15,6 +15,7 @@ interface JudgmentData {
   mind: string;
   premise: string;
   alternatives: string;
+  personaTag: string;
   createdAt: string;
 }
 
@@ -25,6 +26,7 @@ interface SimilarJudgment {
   mind: string;
   premise: string;
   alternatives: string;
+  personaTag: string;
   createdAt: string;
 }
 
@@ -48,6 +50,7 @@ function formatJudgmentContext(j: JudgmentData | SimilarJudgment): string {
     `心: ${formatState("mind", j.mind)}`,
     `前提: ${j.premise}`,
     j.alternatives ? `見送った選択肢: ${j.alternatives}` : null,
+    j.personaTag ? `判断時の自分: ${j.personaTag}` : null,
   ]
     .filter(Boolean)
     .join("\n");

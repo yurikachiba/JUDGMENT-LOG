@@ -13,6 +13,7 @@ interface Judgment {
   mind: string;
   premise: string;
   alternatives: string;
+  personaTag: string;
   tags: string;
   createdAt: string;
   updatedAt: string;

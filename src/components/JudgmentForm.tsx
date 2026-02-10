@@ -14,6 +14,7 @@ export function JudgmentForm({ onCreated }: Props) {
   const [mind, setMind] = useState("normal");
   const [premise, setPremise] = useState("");
   const [alternatives, setAlternatives] = useState("");
+  const [personaTag, setPersonaTag] = useState("");
   const [tags, setTags] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -33,6 +34,7 @@ export function JudgmentForm({ onCreated }: Props) {
           mind,
           premise: premise.trim(),
           alternatives: alternatives.trim(),
+          personaTag: personaTag.trim(),
           tags: tags.trim(),
         }),
       });
@@ -127,6 +129,21 @@ export function JudgmentForm({ onCreated }: Props) {
           value={alternatives}
           onChange={(e) => setAlternatives(e.target.value)}
           placeholder="例：受けて引っ越す / 半年後に再挑戦"
+          className="input-field"
+        />
+      </div>
+
+      {/* 人格タグ */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          この判断をした自分を一言で
+          <span className="text-gray-400 font-normal ml-1">（任意）</span>
+        </label>
+        <input
+          type="text"
+          value={personaTag}
+          onChange={(e) => setPersonaTag(e.target.value)}
+          placeholder="例：余裕はあったが眠気に弱かった"
           className="input-field"
         />
       </div>

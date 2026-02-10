@@ -67,6 +67,7 @@ model Judgment {
   mind         String   // clear / normal / cloudy（心）
   premise      String   @db.Text // その時の前提（1〜2行）
   alternatives String   @default("") // 見送った選択肢
+  personaTag   String   @default("") // 判断時の自分を一言で（人格タグ）
   tags         String   @default("") // カンマ区切りタグ
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
