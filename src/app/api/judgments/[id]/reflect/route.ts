@@ -6,6 +6,9 @@ import { prisma } from "@/lib/prisma";
 import { findSimilarJudgments } from "@/lib/similarity";
 import { generateReflection } from "@/lib/ai";
 
+// Vercel Serverless Function のタイムアウトを延長（AI応答に時間がかかるため）
+export const maxDuration = 60;
+
 // POST /api/judgments/:id/reflect - AIに振り返りを依頼
 export async function POST(
   _req: NextRequest,
@@ -96,9 +99,18 @@ export async function POST(
       );
     }
 
-    if (error instanceof Anthropic.APIError) {
+    if (error instanceof Anthropic.BadRequestError) {
+      console.error("Anthropic BadRequestError details:", error.message);
       return NextResponse.json(
-        { error: `AI サービスでエラーが発生しました: ${error.status}` },
+        { error: `AI サービスへのリクエストが不正です: ${error.message}` },
+        { status: 400 }
+      );
+    }
+
+    if (error instanceof Anthropic.APIError) {
+      console.error("Anthropic APIError details:", error.status, error.message);
+      return NextResponse.json(
+        { error: `AI サービスでエラーが発生しました (${error.status}): ${error.message}` },
         { status: 502 }
       );
     }
