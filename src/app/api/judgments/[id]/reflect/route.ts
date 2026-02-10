@@ -101,8 +101,14 @@ export async function POST(
 
     if (error instanceof Anthropic.BadRequestError) {
       console.error("Anthropic BadRequestError details:", error.message);
+      if (error.message.includes("credit balance is too low")) {
+        return NextResponse.json(
+          { error: "AI サービスの利用枠が不足しています。管理者にお問い合わせください" },
+          { status: 503 }
+        );
+      }
       return NextResponse.json(
-        { error: `AI サービスへのリクエストが不正です: ${error.message}` },
+        { error: "AI サービスへのリクエストでエラーが発生しました" },
         { status: 400 }
       );
     }
