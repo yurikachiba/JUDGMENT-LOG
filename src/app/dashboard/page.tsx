@@ -158,7 +158,7 @@ export default function Home() {
   return (
     <div className="space-y-6">
       {/* ヘッダーエリア */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">判断の記録</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -169,7 +169,7 @@ export default function Home() {
           {judgments.length > 0 && (
             <button
               onClick={handleCopyAll}
-              className="btn-secondary flex items-center gap-1.5 text-sm"
+              className="btn-secondary flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-sm"
               title="全判断をクリップボードにコピー"
             >
               {copyStatus === "copied" ? (
@@ -212,7 +212,7 @@ export default function Home() {
           )}
           <button
             onClick={() => setShowForm(!showForm)}
-            className="btn-primary"
+            className="btn-primary flex-1 sm:flex-none text-center"
           >
             {showForm ? "閉じる" : "記録する"}
           </button>
