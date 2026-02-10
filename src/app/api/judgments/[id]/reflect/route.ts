@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import Anthropic from "@anthropic-ai/sdk";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { findSimilarJudgments } from "@/lib/similarity";
@@ -71,6 +72,34 @@ export async function POST(
       return NextResponse.json(
         { error: "AI サービスが設定されていません" },
         { status: 503 }
+      );
+    }
+
+    if (error instanceof Anthropic.AuthenticationError) {
+      return NextResponse.json(
+        { error: "AI サービスの認証に失敗しました。API キーを確認してください" },
+        { status: 503 }
+      );
+    }
+
+    if (error instanceof Anthropic.RateLimitError) {
+      return NextResponse.json(
+        { error: "AI サービスのリクエスト制限に達しました。しばらく待ってから再試行してください" },
+        { status: 429 }
+      );
+    }
+
+    if (error instanceof Anthropic.NotFoundError) {
+      return NextResponse.json(
+        { error: "AI モデルが見つかりません" },
+        { status: 503 }
+      );
+    }
+
+    if (error instanceof Anthropic.APIError) {
+      return NextResponse.json(
+        { error: `AI サービスでエラーが発生しました: ${error.status}` },
+        { status: 502 }
       );
     }
 
