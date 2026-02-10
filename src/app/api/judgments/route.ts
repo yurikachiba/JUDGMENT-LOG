@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    const { content, energy, time, mind, premise, alternatives, tags } = body;
+    const { content, energy, time, mind, premise, alternatives, personaTag, tags } = body;
 
     if (!content || !energy || !time || !mind || !premise) {
       return NextResponse.json(
@@ -73,6 +73,7 @@ export async function POST(req: NextRequest) {
         mind,
         premise,
         alternatives: alternatives || "",
+        personaTag: personaTag || "",
         tags: tags || "",
         userId: session.user.id,
       },

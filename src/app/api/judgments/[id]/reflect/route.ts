@@ -43,6 +43,7 @@ export async function POST(
         mind: judgment.mind,
         premise: judgment.premise,
         alternatives: judgment.alternatives,
+        personaTag: judgment.personaTag,
         createdAt: judgment.createdAt.toISOString(),
       },
       similar.map((s) => ({
@@ -52,6 +53,7 @@ export async function POST(
         mind: s.mind,
         premise: s.premise,
         alternatives: s.alternatives,
+        personaTag: s.personaTag,
         createdAt: s.createdAt.toISOString(),
       }))
     );
