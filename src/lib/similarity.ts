@@ -6,7 +6,8 @@ import { prisma } from "./prisma";
  */
 export async function findSimilarJudgments(
   judgmentId: string,
-  limit: number = 3
+  limit: number = 3,
+  userId?: string
 ) {
   const target = await prisma.judgment.findUnique({
     where: { id: judgmentId },
@@ -15,7 +16,10 @@ export async function findSimilarJudgments(
   if (!target) return [];
 
   const allOthers = await prisma.judgment.findMany({
-    where: { id: { not: judgmentId } },
+    where: {
+      id: { not: judgmentId },
+      ...(userId ? { userId } : target.userId ? { userId: target.userId } : {}),
+    },
     orderBy: { createdAt: "desc" },
   });
 

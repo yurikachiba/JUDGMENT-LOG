@@ -28,7 +28,7 @@ export async function POST(
     }
 
     // 類似判断を検索
-    const similar = await findSimilarJudgments(params.id, 3);
+    const similar = await findSimilarJudgments(params.id, 3, session.user.id);
 
     // AI振り返り生成
     const response = await generateReflection(
@@ -63,6 +63,17 @@ export async function POST(
     return NextResponse.json(reflection, { status: 201 });
   } catch (error) {
     console.error("POST /api/judgments/[id]/reflect error:", error);
+
+    const message =
+      error instanceof Error ? error.message : String(error);
+
+    if (message.includes("ANTHROPIC_API_KEY")) {
+      return NextResponse.json(
+        { error: "AI サービスが設定されていません" },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
       { error: "振り返りの生成に失敗しました" },
       { status: 500 }
