@@ -1,6 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic();
+function getClient(): Anthropic {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error("ANTHROPIC_API_KEY is not configured");
+  }
+  return new Anthropic();
+}
 
 interface JudgmentData {
   content: string;
@@ -94,7 +99,8 @@ ${formatJudgmentContext(current)}
 --- 過去の類似判断 ---
 ${similarContext}`;
 
-  const response = await anthropic.messages.create({
+  const client = getClient();
+  const response = await client.messages.create({
     model: "claude-sonnet-4-5-20250929",
     max_tokens: 1024,
     system: systemPrompt,
@@ -102,7 +108,7 @@ ${similarContext}`;
   });
 
   const block = response.content[0];
-  if (block.type === "text") {
+  if (block?.type === "text") {
     return block.text;
   }
   return "振り返りを生成できませんでした。";
