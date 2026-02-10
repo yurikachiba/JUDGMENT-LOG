@@ -5,6 +5,13 @@ import { JudgmentForm } from "@/components/JudgmentForm";
 import { JudgmentCard } from "@/components/JudgmentCard";
 import { JudgmentDetail } from "@/components/JudgmentDetail";
 
+interface Reflection {
+  id: string;
+  response: string;
+  answer: string;
+  createdAt: string;
+}
+
 interface Judgment {
   id: string;
   content: string;
@@ -17,12 +24,70 @@ interface Judgment {
   tags: string;
   createdAt: string;
   updatedAt: string;
-  reflections: Array<{
-    id: string;
-    response: string;
-    answer: string;
-    createdAt: string;
-  }>;
+  reflections: Reflection[];
+}
+
+const STATE_LABELS: Record<string, string> = {
+  high: "充実",
+  mid: "普通",
+  low: "低い",
+  plenty: "余裕あり",
+  normal: "普通",
+  tight: "切迫",
+  clear: "明晰",
+  cloudy: "曇り",
+};
+
+function formatJudgmentsAsText(judgments: Judgment[]): string {
+  const lines: string[] = [];
+  lines.push(`判断ログ（全${judgments.length}件）`);
+  lines.push("=".repeat(40));
+
+  for (const j of judgments) {
+    lines.push("");
+    const date = new Date(j.createdAt).toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      weekday: "short",
+    });
+    lines.push(`--- ${date} ---`);
+    lines.push(`【判断】${j.content}`);
+    lines.push(
+      `【体力】${STATE_LABELS[j.energy] ?? j.energy}　【時間】${STATE_LABELS[j.time] ?? j.time}　【心】${STATE_LABELS[j.mind] ?? j.mind}`
+    );
+    lines.push(`【前提】${j.premise}`);
+    if (j.alternatives) {
+      lines.push(`【見送った選択肢】${j.alternatives}`);
+    }
+    if (j.personaTag) {
+      lines.push(`【この判断をした自分】${j.personaTag}`);
+    }
+    if (j.tags) {
+      lines.push(`【タグ】${j.tags}`);
+    }
+
+    for (const r of j.reflections) {
+      const rDate = new Date(r.createdAt).toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      lines.push("");
+      lines.push(`  ▶ 振り返り（${rDate}）`);
+      for (const line of r.response.split("\n")) {
+        lines.push(`  ${line}`);
+      }
+      if (r.answer) {
+        lines.push("");
+        lines.push(`  ✏ あなたの回答: ${r.answer}`);
+      }
+    }
+  }
+
+  lines.push("");
+  lines.push("=".repeat(40));
+  return lines.join("\n");
 }
 
 export default function Home() {
@@ -31,6 +96,9 @@ export default function Home() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle"
+  );
 
   const fetchJudgments = useCallback(async () => {
     try {
@@ -61,6 +129,18 @@ export default function Home() {
     fetchJudgments();
   };
 
+  const handleCopyAll = async () => {
+    try {
+      const text = formatJudgmentsAsText(judgments);
+      await navigator.clipboard.writeText(text);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("error");
+    } finally {
+      setTimeout(() => setCopyStatus("idle"), 2000);
+    }
+  };
+
   const selectedJudgment = judgments.find((j) => j.id === selectedId);
 
   if (selectedJudgment) {
@@ -85,9 +165,58 @@ export default function Home() {
             判断を記録し、未来の自分に問いを残す
           </p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-          {showForm ? "閉じる" : "記録する"}
-        </button>
+        <div className="flex items-center gap-2">
+          {judgments.length > 0 && (
+            <button
+              onClick={handleCopyAll}
+              className="btn-secondary flex items-center gap-1.5 text-sm"
+              title="全判断をクリップボードにコピー"
+            >
+              {copyStatus === "copied" ? (
+                <>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  コピー済み
+                </>
+              ) : copyStatus === "error" ? (
+                "失敗"
+              ) : (
+                <>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  全コピー
+                </>
+              )}
+            </button>
+          )}
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="btn-primary"
+          >
+            {showForm ? "閉じる" : "記録する"}
+          </button>
+        </div>
       </div>
 
       {/* 入力フォーム */}
