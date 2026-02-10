@@ -12,18 +12,21 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-kimi-500 hover:bg-kimi-600 text-white font-medium
-           px-5 py-2.5 rounded-lg transition-colors duration-150;
+    @apply bg-kimi-500 hover:bg-kimi-600 active:bg-kimi-700 text-white font-medium
+           px-4 py-2.5 sm:px-5 rounded-lg transition-colors duration-150
+           min-h-[44px] touch-manipulation;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 border border-gray-200
-           px-5 py-2.5 rounded-lg transition-colors duration-150;
+    @apply bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-700 border border-gray-200
+           px-4 py-2.5 sm:px-5 rounded-lg transition-colors duration-150
+           min-h-[44px] touch-manipulation;
   }
 
   .btn-accent {
-    @apply bg-ruri-500 hover:bg-ruri-600 text-white font-medium
-           px-5 py-2.5 rounded-lg transition-colors duration-150;
+    @apply bg-ruri-500 hover:bg-ruri-600 active:bg-ruri-700 text-white font-medium
+           px-4 py-2.5 sm:px-5 rounded-lg transition-colors duration-150
+           min-h-[44px] touch-manipulation;
   }
 
   .card {
