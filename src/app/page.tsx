@@ -1,4 +1,91 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+const BASE_URL =
+  process.env.NEXTAUTH_URL || "https://judgment-log.vercel.app";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+function JsonLd() {
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "判断ログ",
+    alternateName: "JUDGMENT LOG",
+    url: BASE_URL,
+    description:
+      "成功でも失敗でもない。判断を記録し、AIが過去の自分を呼び出し、未来の自分に問いを返す。",
+    inLanguage: "ja",
+  };
+
+  const appSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "判断ログ",
+    alternateName: "JUDGMENT LOG",
+    url: BASE_URL,
+    applicationCategory: "ProductivityApplication",
+    operatingSystem: "Web",
+    description:
+      "判断を記録し、AIが過去の自分を呼び出し、未来の自分に問いを返す判断記録システム",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "JPY",
+    },
+    inLanguage: "ja",
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "判断ログとは何ですか？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "判断ログは、自分の判断を記録し、AIが過去の判断を呼び出して未来の自分に問いを返す、自己更新のための判断記録システムです。成功や失敗を評価するのではなく、判断そのものを記録します。",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "AIはどのように使われますか？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "AIは答えを出しません。似た判断を過去から拾い、当時の制約を復元し、今との違いを指摘し、問いを投げるだけです。判断するのはあなた自身です。",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "何を記録しますか？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "判断したこと（1行）、その時の状態（体力・時間・心）、判断の前提となった制約（1〜2行）、見送った選択肢を記録します。",
+        },
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+    </>
+  );
+}
 
 function Logo({ size = 40 }: { size?: number }) {
   const iconSize = Math.round(size * 0.55);
@@ -27,8 +114,10 @@ function Logo({ size = 40 }: { size?: number }) {
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#FAFAF8] text-gray-900">
+      <JsonLd />
       {/* ナビゲーション */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF8]/80 backdrop-blur-sm">
+      <header>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF8]/80 backdrop-blur-sm" aria-label="メインナビゲーション">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Logo size={28} />
@@ -42,7 +131,9 @@ export default function LandingPage() {
           </Link>
         </div>
       </nav>
+      </header>
 
+      <main>
       {/* ===== Hero ===== */}
       <section className="min-h-[85vh] flex items-center justify-center px-6 pt-14">
         <div className="max-w-2xl mx-auto text-center">
@@ -50,6 +141,7 @@ export default function LandingPage() {
             JUDGMENT LOG
           </p>
           <h1 className="text-4xl sm:text-6xl font-bold leading-[1.2] tracking-tight">
+            <span className="sr-only">判断ログ - </span>
             答えは出さない。
             <br />
             <span className="text-kimi-500">問いを返す。</span>
@@ -344,6 +436,8 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
+      </main>
 
       {/* ===== Footer ===== */}
       <footer className="border-t border-gray-100 py-8 px-6">

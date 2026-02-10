@@ -2,7 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "プライバシーポリシー - 判断ログ",
+  title: "プライバシーポリシー",
+  description:
+    "判断ログのプライバシーポリシーです。個人情報の取り扱い、データの保護方針についてご確認ください。",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

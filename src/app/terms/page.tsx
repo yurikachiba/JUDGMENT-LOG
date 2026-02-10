@@ -2,7 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "利用規約 - 判断ログ",
+  title: "利用規約",
+  description:
+    "判断ログの利用規約です。サービスの利用条件、禁止事項、免責事項などをご確認ください。",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {
