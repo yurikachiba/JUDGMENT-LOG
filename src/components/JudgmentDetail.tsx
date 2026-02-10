@@ -42,6 +42,7 @@ const STATE_LABELS: Record<string, string> = {
 
 export function JudgmentDetail({ judgment, onBack }: Props) {
   const [reflecting, setReflecting] = useState(false);
+  const [reflectError, setReflectError] = useState<string | null>(null);
   const [reflections, setReflections] = useState<Reflection[]>(
     judgment.reflections
   );
@@ -56,6 +57,7 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
 
   const handleReflect = async () => {
     setReflecting(true);
+    setReflectError(null);
     try {
       const res = await fetch(`/api/judgments/${judgment.id}/reflect`, {
         method: "POST",
@@ -64,10 +66,13 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
         const reflection = await res.json();
         setReflections([reflection, ...reflections]);
       } else {
-        console.error("振り返りの生成に失敗しました:", res.status);
+        const data = await res.json().catch(() => null);
+        const message = data?.error || "振り返りの生成に失敗しました";
+        setReflectError(message);
       }
     } catch (error) {
       console.error("振り返りの生成中にエラーが発生しました:", error);
+      setReflectError("ネットワークエラーが発生しました。接続を確認してください");
     } finally {
       setReflecting(false);
     }
@@ -150,6 +155,13 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
         {/* タグ */}
         <TagEditor tags={tags} onUpdate={handleTagsUpdate} />
       </div>
+
+      {/* エラー表示 */}
+      {reflectError && (
+        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          {reflectError}
+        </div>
+      )}
 
       {/* 振り返りボタン */}
       <button
