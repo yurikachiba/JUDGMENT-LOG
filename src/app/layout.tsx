@@ -11,6 +11,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://judgment-log.com"),
+  verification: {
+    google: "google7695c2aaa0eb0f66",
+  },
   title: "判断ログ - 自分を更新するための判断記録システム",
   description:
     "成功でも失敗でもない。判断を記録し、AIが過去の自分を呼び出し、未来の自分に問いを返す。答えを出すのではなく、判断を疑える自分でい続けるために。",
