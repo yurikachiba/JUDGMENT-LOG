@@ -12,6 +12,9 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || "https://judgment-log.com"),
+  alternates: {
+    canonical: "/",
+  },
   verification: {
     google: "google7695c2aaa0eb0f66",
   },
