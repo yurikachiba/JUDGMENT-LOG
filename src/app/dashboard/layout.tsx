@@ -4,6 +4,10 @@ import { UserMenu } from "@/components/UserMenu";
 export const metadata: Metadata = {
   title: "判断ログ",
   description: "自分を更新するための判断記録システム",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function DashboardLayout({
