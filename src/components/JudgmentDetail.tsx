@@ -41,6 +41,55 @@ const STATE_LABELS: Record<string, string> = {
   cloudy: "曇り",
 };
 
+function formatJudgmentAsText(
+  judgment: Judgment,
+  reflections: Reflection[],
+  tags: string
+): string {
+  const lines: string[] = [];
+  const date = new Date(judgment.createdAt).toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  });
+
+  lines.push(`--- ${date} ---`);
+  lines.push(`【判断】${judgment.content}`);
+  lines.push(
+    `【体力】${STATE_LABELS[judgment.energy] ?? judgment.energy}　【時間】${STATE_LABELS[judgment.time] ?? judgment.time}　【心】${STATE_LABELS[judgment.mind] ?? judgment.mind}`
+  );
+  lines.push(`【前提】${judgment.premise}`);
+  if (judgment.alternatives) {
+    lines.push(`【見送った選択肢】${judgment.alternatives}`);
+  }
+  if (judgment.personaTag) {
+    lines.push(`【この判断をした自分】${judgment.personaTag}`);
+  }
+  if (tags) {
+    lines.push(`【タグ】${tags}`);
+  }
+
+  for (const r of reflections) {
+    const rDate = new Date(r.createdAt).toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    lines.push("");
+    lines.push(`  ▶ 振り返り（${rDate}）`);
+    for (const line of r.response.split("\n")) {
+      lines.push(`  ${line}`);
+    }
+    if (r.answer) {
+      lines.push("");
+      lines.push(`  ✏ あなたの回答: ${r.answer}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
 export function JudgmentDetail({ judgment, onBack }: Props) {
   const [reflecting, setReflecting] = useState(false);
   const [reflectError, setReflectError] = useState<string | null>(null);
@@ -48,6 +97,21 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
     judgment.reflections
   );
   const [tags, setTags] = useState(judgment.tags);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle"
+  );
+
+  const handleCopyThread = async () => {
+    try {
+      const text = formatJudgmentAsText(judgment, reflections, tags);
+      await navigator.clipboard.writeText(text);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("error");
+    } finally {
+      setTimeout(() => setCopyStatus("idle"), 2000);
+    }
+  };
 
   const date = new Date(judgment.createdAt).toLocaleDateString("ja-JP", {
     year: "numeric",
@@ -116,8 +180,50 @@ export function JudgmentDetail({ judgment, onBack }: Props) {
 
       {/* 判断内容 */}
       <div className="card">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center justify-between mb-4">
           <span className="text-sm text-gray-400">{date}</span>
+          <button
+            onClick={handleCopyThread}
+            className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            title="このスレッドをコピー"
+          >
+            {copyStatus === "copied" ? (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                コピー済み
+              </>
+            ) : copyStatus === "error" ? (
+              "失敗"
+            ) : (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                コピー
+              </>
+            )}
+          </button>
         </div>
 
         <h2 className="text-xl font-bold text-gray-900 mb-4">
