@@ -99,6 +99,9 @@ export default function Home() {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle"
   );
+  const [exportStatus, setExportStatus] = useState<
+    "idle" | "exporting" | "error"
+  >("idle");
 
   const fetchJudgments = useCallback(async () => {
     try {
@@ -141,6 +144,30 @@ export default function Home() {
     }
   };
 
+  const handleExportTxt = async () => {
+    setExportStatus("exporting");
+    try {
+      const res = await fetch("/api/judgments/export");
+      if (!res.ok) throw new Error("export failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download =
+        res.headers
+          .get("Content-Disposition")
+          ?.match(/filename="(.+)"/)?.[1] ?? "judgment-log.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setExportStatus("idle");
+    } catch {
+      setExportStatus("error");
+      setTimeout(() => setExportStatus("idle"), 2000);
+    }
+  };
+
   const selectedJudgment = judgments.find((j) => j.id === selectedId);
 
   if (selectedJudgment) {
@@ -167,48 +194,80 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-2">
           {judgments.length > 0 && (
-            <button
-              onClick={handleCopyAll}
-              className="btn-secondary flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-sm"
-              title="全判断をクリップボードにコピー"
-            >
-              {copyStatus === "copied" ? (
-                <>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20 6 9 17l-5-5" />
-                  </svg>
-                  コピー済み
-                </>
-              ) : copyStatus === "error" ? (
-                "失敗"
-              ) : (
-                <>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                  全コピー
-                </>
-              )}
-            </button>
+            <>
+              <button
+                onClick={handleExportTxt}
+                disabled={exportStatus === "exporting"}
+                className="btn-secondary flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-sm"
+                title="全判断をTXTファイルとしてダウンロード"
+              >
+                {exportStatus === "exporting" ? (
+                  "エクスポート中..."
+                ) : exportStatus === "error" ? (
+                  "失敗"
+                ) : (
+                  <>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    TXT出力
+                  </>
+                )}
+              </button>
+              <button
+                onClick={handleCopyAll}
+                className="btn-secondary flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-sm"
+                title="全判断をクリップボードにコピー"
+              >
+                {copyStatus === "copied" ? (
+                  <>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    コピー済み
+                  </>
+                ) : copyStatus === "error" ? (
+                  "失敗"
+                ) : (
+                  <>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    全コピー
+                  </>
+                )}
+              </button>
+            </>
           )}
           <button
             onClick={() => setShowForm(!showForm)}
